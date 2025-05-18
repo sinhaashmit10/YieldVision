@@ -24,12 +24,12 @@ const HeroSection = () => {
           </Link>
         </div>
         {/* Second video container */}
-        <div className="relative w-full lg:w-1/2 mx-2 my-4 lg:my-0">
+        {/* <div className="relative w-full lg:w-1/2 mx-2 my-4 lg:my-0">
           <video autoPlay loop muted className="rounded-lg w-full border border-green-700 shadow-green-400" src={video4}></video>
           <Link to="/dashboard" className="absolute bottom-2 right-2 mr-2 bg-gradient-to-r from-green-500 to-green-900 py-2 px-4 rounded-md text-white">
             Dashboard
           </Link>
-        </div>
+        </div> */}
         <div className="relative w-full lg:w-1/2 mx-2 my-4 lg:my-0">
           <video autoPlay loop muted className="rounded-lg w-full border border-green-700 shadow-green-400" src={video3}></video>
           <Link to="/fertilizer-form" className="absolute bottom-2 right-2 mr-2 bg-gradient-to-r from-green-500 to-green-900 py-2 px-4 rounded-md text-white">

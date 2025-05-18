@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OpenAI from 'openai';
 import * as XLSX from 'xlsx';
-// import axios from 'axios';
 
 const Form = () => {
   const [formData, setFormData] = useState({
@@ -21,10 +20,10 @@ const Form = () => {
     temperature: '',
     rainfall: ''
   });
-
+  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
-  const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true });
+  // const openai = new OpenAI({ apiKey: import.meta.env.VITE_OPENAI_API_KEY, dangerouslyAllowBrowser: true });
   // const unsplashAccessKey = import.meta.env.VITE_UNSPLASH_ACCESS_KEY;
 
   const handleChange = (e) => {
@@ -73,13 +72,13 @@ const Form = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+    setIsLoading(true);
     try {
       // Fetch crop predictions from your backend
       const response = await fetch(
         `https://capstone-backend-ayix.onrender.com/predict?state=${formData.state}&district=${formData.city}&season=${formData.season}&n=${formData.nitrogen}&p=${formData.phosphorus}&k=${formData.potassium}&temperature=${formData.temperature}&humidity=${formData.humidity}&ph=${formData.phValue}&rainfall=${formData.rainfall}`
       );
-  
+      
       const data = await response.json();
       console.log('Backend Response:', data);  // Log the response to inspect it
   
@@ -94,19 +93,19 @@ const Form = () => {
         const crop = cropItem.Crop;  // Extract the crop name from the response
   
         // Request crop information from OpenAI
-        const aiResponse = await openai.chat.completions.create({
-          model: 'gpt-3.5-turbo',
-          messages: [{ role: 'system', content: `Provide information about the crop: ${crop}. And also suggest the best fertilizer for that specific crop.` }]
-        });
+        // const aiResponse = await openai.chat.completions.create({
+        //   model: 'gpt-3.5-turbo',
+        //   messages: [{ role: 'system', content: `Provide very brief information about the crop: ${crop} in less than 5 lines. And also suggest the best fertilizer for that specific crop.` }]
+        // });
   
-        const cropInfo = aiResponse.choices[0].message.content;
+        // const cropInfo = aiResponse.choices[0].message.content;
   
         // Unsplash API integration for crop image
         const imageResponse = await fetch(`https://api.unsplash.com/search/photos?query=${crop}&client_id=${import.meta.env.VITE_UNSPLASH_ACCESS_KEY}`);
         const imageData = await imageResponse.json();
         const cropImage = imageData.results[0]?.urls?.small || '';
   
-        return { name: crop, info: cropInfo, image: cropImage, probability: cropItem.Probability };
+        return { name: crop, image: cropImage, probability: cropItem.Probability };
       });
   
       const cropDetails = await Promise.all(cropInformationPromises);
@@ -117,6 +116,8 @@ const Form = () => {
     } catch (error) {
       console.error('Error during prediction or data fetching:', error);
       setErrorMessage('There was an error processing your request. Please try again.');
+    } finally{
+      setIsLoading(false);
     }
   };
   
@@ -132,6 +133,7 @@ const Form = () => {
         </p>
 
         {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
+        {isLoading && <p className="text-center text-blue-500">Loading...</p>}
 
         <div className="mb-5 bg-white bg-opacity-10 backdrop-blur-md border-2 border-gray-300 rounded-lg shadow-lg shadow-gray-500 p-8">
           <form onSubmit={handleSubmit} className="space-y-8">

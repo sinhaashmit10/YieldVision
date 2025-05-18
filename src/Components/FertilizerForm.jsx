@@ -17,10 +17,10 @@ const FertilizerForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const openai = new OpenAI({
-    apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-    dangerouslyAllowBrowser: true,
-  });
+  // const openai = new OpenAI({
+  //   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+  //   dangerouslyAllowBrowser: true,
+  // });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -76,21 +76,21 @@ const FertilizerForm = () => {
       }
 
       // Use OpenAI to generate a user-friendly description
-      const aiResponse = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content: `Explain the fertilizer ${backendData.recommended_fertilizer} in simple terms for farmers. Also state the correct process to use the suggested fertilizer.`,
-          },
-        ],
-      });
+      // const aiResponse = await openai.chat.completions.create({
+      //   model: "gpt-3.5-turbo",
+      //   messages: [
+      //     {
+      //       role: "system",
+      //       content: `Explain the fertilizer ${backendData.recommended_fertilizer} in simple terms for farmers and keep it very brirf (5 lines). Also state the correct process to use the suggested fertilizer.`,
+      //     },
+      //   ],
+      // });
 
-      const description = aiResponse.choices[0]?.message?.content || "No description available.";
+      // const description = aiResponse.choices[0]?.message?.content || "No description available.";
 
       // Navigate to the result page with data
       navigate("/fertilizer-result", {
-        state: { recommendation: backendData.recommended_fertilizer, description },
+        state: { recommendation: backendData.recommended_fertilizer},
       });
     } catch (error) {
       console.error("Error:", error);
